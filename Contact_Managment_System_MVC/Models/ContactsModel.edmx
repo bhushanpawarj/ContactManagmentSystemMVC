@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ContactsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Address_id" />
+          </Key>
+          <Property Name="Address_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Contact_id" Type="int" />
+          <Property Name="Address_type" Type="varchar" MaxLength="255" />
+          <Property Name="Address" Type="varchar" MaxLength="255" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
+          <Property Name="State" Type="varchar" MaxLength="50" />
+          <Property Name="Zip" Type="varchar" MaxLength="6" />
+        </EntityType>
+        <EntityType Name="Contacts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fname" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mname" Type="nvarchar" MaxLength="255" />
+          <Property Name="Lname" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'Contacts.dbo.ContactsMain' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="ContactsMain">
+          <Property Name="contact_id" Type="varchar" MaxLength="50" />
+          <Property Name="first_name" Type="varchar" MaxLength="50" />
+          <Property Name="middle_name" Type="varchar" MaxLength="50" />
+          <Property Name="last_name" Type="varchar" MaxLength="50" />
+          <Property Name="home_phone" Type="varchar" MaxLength="50" />
+          <Property Name="cell_phone" Type="varchar" MaxLength="50" />
+          <Property Name="home_address" Type="varchar" MaxLength="50" />
+          <Property Name="home_city" Type="varchar" MaxLength="50" />
+          <Property Name="home_state" Type="varchar" MaxLength="50" />
+          <Property Name="home_zip" Type="varchar" MaxLength="50" />
+          <Property Name="work_phone" Type="varchar" MaxLength="50" />
+          <Property Name="work_address" Type="varchar" MaxLength="50" />
+          <Property Name="work_city" Type="varchar" MaxLength="50" />
+          <Property Name="work_state" Type="varchar" MaxLength="50" />
+          <Property Name="work_zip" Type="varchar" MaxLength="50" />
+          <Property Name="birth_date" Type="varchar" MaxLength="50" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Contacts.dbo.Date' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Date">
+          <Key>
+            <PropertyRef Name="Date_id" />
+            <PropertyRef Name="Contact_id" />
+          </Key>
+          <Property Name="Date_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Contact_id" Type="int" Nullable="false" />
+          <Property Name="Date_type" Type="nchar" MaxLength="10" />
+          <Property Name="Date" Type="date" />
+        </EntityType>
+        <EntityType Name="Phone">
+          <Key>
+            <PropertyRef Name="Phone_id" />
+          </Key>
+          <Property Name="Phone_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Contact_id" Type="int" Nullable="false" />
+          <Property Name="Phone_type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Area_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Number" Type="nvarchar" MaxLength="8" />
+        </EntityType>
+        <Function Name="MigrateContactDataFinal" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="ContactsModelStoreContainer">
+          <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Phone" EntityType="Self.Phone" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Date" EntityType="Self.Date" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Date].[Date_id] AS [Date_id], 
+    [Date].[Contact_id] AS [Contact_id], 
+    [Date].[Date_type] AS [Date_type], 
+    [Date].[Date] AS [Date]
+    FROM [dbo].[Date] AS [Date]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ContactsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Address_id" />
+          </Key>
+          <Property Name="Address_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Contact_id" Type="Int32" />
+          <Property Name="Address_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Address1" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Zip" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Lname" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Phone">
+          <Key>
+            <PropertyRef Name="Phone_id" />
+          </Key>
+          <Property Name="Phone_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Contact_id" Type="Int32" Nullable="false" />
+          <Property Name="Phone_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Area_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Date">
+          <Key>
+            <PropertyRef Name="Date_id" />
+            <PropertyRef Name="Contact_id" />
+          </Key>
+          <Property Name="Date_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Contact_id" Type="Int32" Nullable="false" />
+          <Property Name="Date_type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Date1" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityContainer Name="ContactsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Addresses" EntityType="Self.Address" />
+          <EntitySet Name="Contacts" EntityType="Self.Contact" />
+          <EntitySet Name="Phones" EntityType="Self.Phone" />
+          <EntitySet Name="Dates" EntityType="Self.Date" />
+          <FunctionImport Name="MigrateContactDataFinal" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ContactsModelStoreContainer" CdmEntityContainer="ContactsEntities">
+          <EntitySetMapping Name="Addresses">
+            <EntityTypeMapping TypeName="ContactsModel.Address">
+              <MappingFragment StoreEntitySet="Address">
+                <ScalarProperty Name="Address_id" ColumnName="Address_id" />
+                <ScalarProperty Name="Contact_id" ColumnName="Contact_id" />
+                <ScalarProperty Name="Address_type" ColumnName="Address_type" />
+                <ScalarProperty Name="Address1" ColumnName="Address" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contacts">
+            <EntityTypeMapping TypeName="ContactsModel.Contact">
+              <MappingFragment StoreEntitySet="Contacts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Fname" ColumnName="Fname" />
+                <ScalarProperty Name="Mname" ColumnName="Mname" />
+                <ScalarProperty Name="Lname" ColumnName="Lname" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Phones">
+            <EntityTypeMapping TypeName="ContactsModel.Phone">
+              <MappingFragment StoreEntitySet="Phone">
+                <ScalarProperty Name="Phone_id" ColumnName="Phone_id" />
+                <ScalarProperty Name="Contact_id" ColumnName="Contact_id" />
+                <ScalarProperty Name="Phone_type" ColumnName="Phone_type" />
+                <ScalarProperty Name="Area_code" ColumnName="Area_code" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dates">
+            <EntityTypeMapping TypeName="ContactsModel.Date">
+              <MappingFragment StoreEntitySet="Date">
+                <ScalarProperty Name="Date_id" ColumnName="Date_id" />
+                <ScalarProperty Name="Contact_id" ColumnName="Contact_id" />
+                <ScalarProperty Name="Date_type" ColumnName="Date_type" />
+                <ScalarProperty Name="Date1" ColumnName="Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="MigrateContactDataFinal" FunctionName="ContactsModel.Store.MigrateContactDataFinal" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

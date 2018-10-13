@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div class="container-fluid">
+    <div id="gridContainer"></div>
+ </div>
+<div id="widget"></div>
+@section scripts{
+
+    <script>
+        var UpdateData;
+        var opt;
+        $(function () {
+
+            function logEvent(eventName) {
+                var logList = $("#events ul"),
+                    newItem = $("<li>", { text: eventName });
+
+                logList.prepend(newItem);
+            }
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: '/Contacts/LoadContactsData',
+                keyExpr: "Id",
+                showBorders: true,
+                
+                editing: {
+                    mode: "form",
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    allowAdding: true
+                },
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [5, 10, 20],
+                    showInfo: true
+                },
+                columns: [
+                    {
+                        dataField: "Id",
+                        visible: false
+                    },
+                    {
+                        dataField: "Fname",
+                        caption: "First Name"
+                    },
+
+                    {
+                        dataField: "Lname",
+                        caption: "Last Name"
+                    },
+                    {
+                        caption:"Actions",
+                        width: 100,
+                        allowFiltering: false,
+                        allowSorting: false,
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .append($("<a>").addClass('dx-link')
+                                    .text('Show All Data')
+                                    .on('dxclick', function () {
+                                        //Do something with options.data;
+                                        //alert("initializing pop up  ");
+                                        $("#widget").dxPopup("show");
+
+                                    }))
+                                .appendTo(container);
+                        },
+                    }
+                ],
+                onEditingStart: function (e) {
+                    logEvent("EditingStart");
+                },
+                onInitNewRow: function (e) {
+                    logEvent("InitNewRow");
+                },
+                onRowInserting: function (e) {
+                    logEvent("RowInserting");
+                    console.log("Data inserting is  : " + e.data)
+                    var contact = e.data;
+                    try {
+                        var ID = e.key.Id;
+                    }
+                    catch (err) {
+                        var ID = 0;
+                    }
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: '/Contacts/SaveContact',
+                        data: { ID: ID, contact: JSON.stringify(contact) },
+                        timeout: 5000,
+                        success: function (result, textStatus) {
+                            if (ID === 90)
+                                //$("#AddToast").dxToast("show");
+
+                                alert("Saved Successfully");
+                            else
+                                //$("#updateToast").dxToast("show");
+                                alert("Successfully Updated Data");
+
+                            var grid = $("#gridContainer").dxDataGrid('instance');
+                            grid.refresh();
+                        },
+                        fail: function (xhr, textStatus, errorThrown) {
+                            alert("Failed to Save contact..Please check the data")
+                        }
+                    });
+                },
+                onRowInserted: function (e) {
+                    logEvent("RowInserted");
+                },
+                onRowUpdating: function (e) {
+                    logEvent("RowUpdating");
+                    UpdateData = e;
+                    console.log(e)
+                    var contact = e.newData;
+                    try {
+                        var ID = e.key.Id;
+                    }
+                    catch (err) {
+                        var ID = 0;
+                    }
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: '/Contacts/SaveContact',
+                        data: { ID: ID , contact: JSON.stringify(contact) },
+                        timeout: 5000,
+                        success: function (result, textStatus) {
+                            if (ID === 0)
+                                //$("#AddToast").dxToast("show");
+
+                                alert("Updated Successfully")
+                            else
+                                //$("#updateToast").dxToast("show");
+                                alert("Successfully Saved Data")
+
+                            var grid = $("#gridContainer").dxDataGrid('instance');
+                            grid.refresh();
+                        },
+                        fail: function (xhr, textStatus, errorThrown) {
+                            alert("Failed to Save contact..Please check the data")
+                        }
+                    });
+
+                },
+                onRowUpdated: function (e) {
+                    logEvent("RowUpdated");
+                },
+                onRowRemoving: function (e) {
+                    logEvent("RowRemoving");
+                    UpdateData = e;
+                    console.log(e)
+                    var contact = e.data;
+                    try {
+                        var ID = e.key.Id;
+                    }
+                    catch (err) {
+                        var ID = 0;
+                    }
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: '/Contacts/DeleteContact',
+                        data: { ID: ID, contact: JSON.stringify(contact) },
+                        timeout: 5000,
+                        success: function (result, textStatus) {
+                           
+                            alert("Record Deleted Successfully")
+                           
+
+                            var grid = $("#gridContainer").dxDataGrid('instance');
+                            grid.refresh();
+                        },
+                        fail: function (xhr, textStatus, errorThrown) {
+                            alert("Failed to Delete contact..Please check the data")
+                        }
+                    });
+
+
+                },
+                onRowRemoved: function (e) {
+                    logEvent("RowRemoved");
+                }
+            });
+        });
+
+
+        $(function () {
+            $("#widget").dxPopup({
+                "visible": false,
+                title:"Contact Details",
+                contentTemplate: function (container, options) {
+                    opt = options;
+                    $("<div>")
+                        .dxDataGrid({
+                            dataSource: '/Contacts/LoadAddressData',
+                            loadParams: { ContactId: 'options.data.Id' },
+                            keyExpr: "Address_id",
+                            showBorders: true,
+
+                            editing: {
+                                mode: "form",
+                                allowUpdating: true,
+                                allowDeleting: true,
+                                allowAdding: true
+                            },
+                            paging: {
+                                pageSize: 10
+                            },
+                            pager: {
+                                showPageSizeSelector: true,
+                                allowedPageSizes: [5, 10, 20],
+                                showInfo: true
+                            },
+                            columns: ["Address_type", "Address1", "City", "State", "Zip"],
+                            showBorders: true
+                        }).appendTo(container);
+                }
+
+            });
+        });
+
+    </script>
+
+}
